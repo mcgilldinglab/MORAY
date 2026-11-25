@@ -95,4 +95,10 @@ python -m moray infer-interactome --host host.h5ad --microbial-counts runs/micro
 
 `associations.tsv` contains tested pairs, permutation P and adjusted q values, and model-predicted directions. `edges.tsv` contains pairs passing q < 0.05 and identifies coding-load rows separately. Interactome inference runs 5,000 permutations by default and supports `--workers` for parallel CPU execution.
 
-Run `python -m moray --help` for the command list. The classifier's vendored BBHash header uses the [upstream MIT license](classifier/src/BBHash-LICENSE.txt).
+Run `python -m moray --help` for the command list.
+
+## Licensing
+
+MORAY-authored code is available under the [PolyForm Noncommercial License 1.0.0](LICENSE-NONCOMMERCIAL.txt). Uses outside those permissions require a [separate written commercial license](COMMERCIAL-LICENSING.md). See the [dual licensing notice](LICENSE) for the scope of each option.
+
+The classifier's vendored BBHash header uses the [upstream MIT license](classifier/src/BBHash-LICENSE.txt).

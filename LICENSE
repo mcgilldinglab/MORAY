@@ -1,0 +1,32 @@
+MORAY — DUAL LICENSING NOTICE
+
+Copyright in MORAY-authored code remains with its respective copyright holders.
+This notice applies to MORAY-authored software code distributed with it, subject
+to separately identified file or component licenses and any earlier grants.
+
+1. NONCOMMERCIAL LICENSE
+
+The covered software is available under the complete, unmodified PolyForm
+Noncommercial License 1.0.0, reproduced in LICENSE-NONCOMMERCIAL.txt.
+The PolyForm terms govern permitted purposes and organizations. Preserve all
+applicable Required Notices when distributing the software.
+
+2. SEPARATE COMMERCIAL LICENSE
+
+Uses outside the permissions granted by the PolyForm terms require a separate
+written commercial license from the copyright holders or their authorized
+representatives. The executed agreement governs those uses.
+
+McGill Ding Lab coordinates commercial licensing inquiries at jun.ding@mcgill.ca.
+See COMMERCIAL-LICENSING.md for contact and request information.
+
+3. THIRD-PARTY MATERIAL AND PRE-EXISTING RIGHTS
+
+Third-party components remain subject to their own licenses and attribution
+notices. The vendored BBHash header uses the MIT license reproduced in
+classifier/src/BBHash-LICENSE.txt. Any rights granted under earlier licenses
+continue under their applicable terms.
+
+Data, model weights and other non-code assets are subject to their applicable
+license notices. The copyright holders retain their rights in the software,
+including the right to license it under other terms.
