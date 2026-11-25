@@ -1,0 +1,76 @@
+{
+  "_comment": [
+    "Path template. Two placeholders are substituted at run time by run_pipeline.py:",
+    "  {PKG}    -> this package's root (code/bin/config that you copy between servers)",
+    "  {ASSETS} -> the big data bundle (databases + checkpoints + backbone), set in site.json",
+    "Do not edit paths here for a new server -- edit config/site.json instead.",
+    "",
+    "parent_evidence: how a domain's genus/phylum evidence is produced. NOT interchangeable --",
+    "  'rollup' aggregates upward from the top-20 species (bacteria, fungi: verified bit-identical);",
+    "  'direct' queries a per-rank index (virus: its DB is direct-rank; a rollup provably cannot",
+    "  reproduce it). The DL for each domain was trained on the evidence its mode produces.",
+    "threshold: deployment pins a fixed gate threshold tau=0.5 (real reads have no known error rate)."
+  ],
+  "fixed_threshold": 0.5,
+  "l1_routing": {
+    "binary": "{PKG}/bin/step48_compact_domain_db",
+    "mode": "query-reads-stream6",
+    "compact_dir": "{ASSETS}/01_L1_routing/db/domain_unique_k25_compact6_256",
+    "compact_shards": 256,
+    "k": 25,
+    "chunk_size": 3000000,
+    "_chunk_size_note": "reads processed in this many rows per step48 invocation (run_p1_route_chunked.sh) so p1 RAM = one chunk + the ~90G compact DB, not the whole sample. Lower it if p1 still OOMs on very deep samples.",
+    "_calls": "best==0 -> no_call ; tied max -> ambiguous ; else the domain, status=called",
+    "domains_sent_to_dl": ["bacteria", "fungi", "virus"],
+    "_human_note": "human reads are routed but NOT classified further -- there is no human DL model."
+  },
+  "query_binary": "{PKG}/bin/mphf_query_fast",
+  "query_binary_multi": "{PKG}/bin/mphf_query_fast_multi",
+  "k25_chunk_size": 5000000,
+  "_query_binary_note": "query_binary = original mphf_query_fast (still used for the VIRUS parent evidence, which needs --mask-shape parent -- the multi binary does not implement that). query_binary_multi = mphf_query_fast_multi (load-once + --chunk-size + --jobs), used for the species evidence where the 380G bacteria index makes load-once/chunking matter; byte-identical to the original (verified by cmp). k25_chunk_size caps reads-in-RAM per chunk so bacteria k25 stays under a 500G node.",
+  "predict_script": "{PKG}/code/predict_chain_54_resumable.py",
+  "rollup_script": "{PKG}/code/aggregate_parent_masks.py",
+  "resources": {
+    "_note": "Per-stage Slurm resources (SLURM mode only; ignored on standalone). Right-sized from real history (narval pitfalls 8.5): keep bacteria k25 mem UNDER a cluster memory tier (490G fits the abundant ~498/500G tier; 560G was forced onto the scarce ~2TB tier). Tune per cluster with `sinfo -o '%P %l %m %c'`.",
+    "p1_route":   {"cpus": 16, "mem": "64G",  "time": "4:00:00"},
+    "p2_split":   {"cpus": 2,  "mem": "16G",  "time": "1:00:00"},
+    "p3_bacteria":{"cpus": 16, "mem": "490G", "time": "3:00:00"},
+    "p3_fungi":   {"cpus": 16, "mem": "80G",  "time": "1:00:00"},
+    "p3_virus":   {"cpus": 16, "mem": "32G",  "time": "0:30:00"},
+    "p4_bacteria":{"cpus": 8,  "mem": "224G", "time": "8:00:00", "gpu": true},
+    "p4_fungi":   {"cpus": 8,  "mem": "64G",  "time": "4:00:00", "gpu": true},
+    "p4_virus":   {"cpus": 8,  "mem": "64G",  "time": "1:00:00", "gpu": true},
+    "p5_merge":   {"cpus": 2,  "mem": "32G",  "time": "1:00:00"}
+  },
+  "domains": {
+    "fungi": {
+      "parent_evidence": "rollup",
+      "species_index": "{ASSETS}/02_fungi/db/k25_species_mphf",
+      "species_index_shards": 1,
+      "priors": "{ASSETS}/02_fungi/db/k25_species_mphf/priors.tsv",
+      "rollup_metadata": "{ASSETS}/02_fungi/db/k25_metadata.tsv",
+      "model_config": "{PKG}/config/deploy/fungi.json",
+      "task_group": "fungi_full_all_no_ohe"
+    },
+    "bacteria": {
+      "parent_evidence": "rollup",
+      "species_index": "{ASSETS}/03_bacteria/db/k25_species_mphf",
+      "species_index_shards": 128,
+      "priors": "{ASSETS}/03_bacteria/db/k25_species_mphf/priors.tsv",
+      "rollup_metadata": "{ASSETS}/03_bacteria/db/index_metadata.tsv",
+      "model_config": "{PKG}/config/deploy/bacteria.json",
+      "task_group": "bacteria_full_top1_formal_fulltest",
+      "_resources": "the 380 GB index needs ~500 GB RAM; load it once per run, not per chunk"
+    },
+    "virus": {
+      "parent_evidence": "direct",
+      "species_index": "{ASSETS}/04_virus/db/k25_species_mphf",
+      "genus_index": "{ASSETS}/04_virus/db/k25_genus_mphf",
+      "phylum_index": "{ASSETS}/04_virus/db/k25_phylum_mphf",
+      "species_index_shards": 1,
+      "priors": "{ASSETS}/04_virus/db/k25_species_mphf/priors.tsv",
+      "model_config": "{PKG}/config/deploy/virus.json",
+      "task_group": "step53_virus_clean_direct_rank_full_k25_strict_chain"
+    }
+  }
+}

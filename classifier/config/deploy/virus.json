@@ -1,0 +1,203 @@
+{
+ "inputs": {
+  "k25_metadata_tsv": "{LABELS}/virus/metadata.tsv",
+  "model_dir": "{ASSETS}/99_shared/base_model/GENERator-v2-prokaryote-1.2b-base",
+  "train_truth_tsv": "{LABELS}/virus/label_space.tsv"
+ },
+ "outputs": {
+  "output_dir": "{ASSETS}/04_virus/model"
+ },
+ "tasks": [
+  {
+   "batch_size": 40,
+   "calibration_mode": "domain_global",
+   "candidate_embedding_dim": 96,
+   "dropout": 0.12,
+   "embedding_dim": 2048,
+   "eval_batch_size": 1024,
+   "eval_splits": [
+    "val_err000",
+    "val_err005",
+    "val_err010",
+    "test_err000",
+    "test_err005",
+    "test_err010"
+   ],
+   "family": "virus_clean_full_top1_rollup_k25_phylum_no_ohe_sp2000",
+   "gate_hidden_dims": [
+    576,
+    128
+   ],
+   "generator_hidden_dims": [
+    1024,
+    384
+   ],
+   "k25_embedding_dim": 96,
+   "lora_alpha": 32,
+   "lora_dropout": 0.05,
+   "lora_r": 8,
+   "mask_channels": 96,
+   "mask_output_dim": 128,
+   "mask_view": "kmer",
+   "max_candidates": 20,
+   "max_token_length": 64,
+   "name": "virus_clean_full_top1_rollup_k25_54D_phylum_36B_lora_r8_k25_hitmask_no_ohe_sp2000",
+   "pooling_type": "mean",
+   "read_hidden_dims": [
+    448
+   ],
+   "restrict_candidates_to_parent": false,
+   "scorer_hidden_dims": [
+    576,
+    128
+   ],
+   "sequence_source": "last",
+   "target_modules": [
+    "q_proj",
+    "k_proj",
+    "v_proj",
+    "o_proj"
+   ],
+   "target_rank": "phylum",
+   "train_splits": [
+    "virus_clean_full_top1_train_sp2000_err000"
+   ],
+   "use_ohe": false,
+   "use_parent_embedding": false,
+   "use_domain_embedding": false,
+   "train_multi_candidate_only": true,
+   "validation_split": "val_err000"
+  },
+  {
+   "batch_size": 40,
+   "calibration_mode": "domain_global",
+   "candidate_embedding_dim": 128,
+   "dropout": 0.12,
+   "embedding_dim": 2048,
+   "eval_batch_size": 1024,
+   "eval_splits": [
+    "val_err000",
+    "val_err005",
+    "val_err010",
+    "test_err000",
+    "test_err005",
+    "test_err010"
+   ],
+   "family": "virus_clean_full_top1_rollup_k25_genus_no_ohe_sp2000",
+   "gate_hidden_dims": [
+    576,
+    128
+   ],
+   "generator_hidden_dims": [
+    1024,
+    384
+   ],
+   "k25_embedding_dim": 128,
+   "lora_alpha": 32,
+   "lora_dropout": 0.05,
+   "lora_r": 8,
+   "mask_channels": 96,
+   "mask_output_dim": 128,
+   "mask_view": "kmer",
+   "max_candidates": 20,
+   "max_token_length": 64,
+   "name": "virus_clean_full_top1_rollup_k25_54E_genus_36B_lora_r8_k25_hitmask_no_ohe_sp2000",
+   "pooling_type": "mean",
+   "read_hidden_dims": [
+    448
+   ],
+   "restrict_candidates_to_parent": true,
+   "scorer_hidden_dims": [
+    576,
+    128
+   ],
+   "sequence_source": "last",
+   "target_modules": [
+    "q_proj",
+    "k_proj",
+    "v_proj",
+    "o_proj"
+   ],
+   "target_rank": "genus",
+   "train_splits": [
+    "virus_clean_full_top1_train_sp2000_err000"
+   ],
+   "use_ohe": false,
+   "use_parent_embedding": false,
+   "use_domain_embedding": false,
+   "train_multi_candidate_only": true,
+   "validation_split": "val_err000"
+  },
+  {
+   "batch_size": 40,
+   "calibration_mode": "domain_global",
+   "candidate_embedding_dim": 128,
+   "dropout": 0.12,
+   "embedding_dim": 2048,
+   "eval_batch_size": 1024,
+   "eval_splits": [
+    "val_err000",
+    "val_err005",
+    "val_err010",
+    "test_err000",
+    "test_err005",
+    "test_err010"
+   ],
+   "family": "virus_clean_full_top1_rollup_k25_species_no_ohe_sp2000",
+   "gate_hidden_dims": [
+    576,
+    128
+   ],
+   "generator_hidden_dims": [
+    1024,
+    384
+   ],
+   "k25_embedding_dim": 128,
+   "lora_alpha": 32,
+   "lora_dropout": 0.05,
+   "lora_r": 8,
+   "mask_channels": 96,
+   "mask_output_dim": 128,
+   "mask_view": "kmer",
+   "max_candidates": 20,
+   "max_token_length": 64,
+   "name": "virus_clean_full_top1_rollup_k25_54F_species_36B_lora_r8_k25_hitmask_no_ohe_sp2000",
+   "pooling_type": "mean",
+   "read_hidden_dims": [
+    448
+   ],
+   "restrict_candidates_to_parent": true,
+   "scorer_hidden_dims": [
+    576,
+    128
+   ],
+   "sequence_source": "last",
+   "target_modules": [
+    "q_proj",
+    "k_proj",
+    "v_proj",
+    "o_proj"
+   ],
+   "target_rank": "species",
+   "train_splits": [
+    "virus_clean_full_top1_train_sp2000_err000"
+   ],
+   "use_ohe": false,
+   "use_parent_embedding": false,
+   "use_domain_embedding": false,
+   "train_multi_candidate_only": true,
+   "validation_split": "val_err000"
+  }
+ ],
+ "training": {
+  "amp": true,
+  "epochs": 8,
+  "grad_clip_norm": 1.0,
+  "kmer_mask_length": 126,
+  "learning_rate": 8e-05,
+  "num_workers": 4,
+  "seed": 46407,
+  "sequence_length": 150,
+  "weight_decay": 0.01
+ }
+}
