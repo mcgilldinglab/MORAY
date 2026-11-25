@@ -1,6 +1,6 @@
 # Classifier assets
 
-Use the assets from the MORAY v7 deployment. Set `MBC_ASSETS_ROOT` to its `assets` directory and `MBC_LABEL_SPACE` to its `config/label_space` directory. Keep the model and its label tables from the same build.
+Set `MBC_ASSETS_ROOT` to the MORAY classifier bundle's `assets` directory and `MBC_LABEL_SPACE` to its `config/label_space` directory. Use the databases, model weights and label tables from the same build.
 
 | Path under `MBC_ASSETS_ROOT` | Contents |
 |---|---|

@@ -2,11 +2,13 @@
 
 MORAY uses host single-cell RNA sequencing data to identify microbial taxa, find taxon-associated host transcriptional signatures and infer signed associations between microbial and host genes.
 
+![Overview of the MORAY workflow](docs/moray-overview.png)
+
 ## Hierarchical microbial classification
 
 The classifier combines canonical 25-mer matches with genomic language model representations to assign host-unmapped reads at the phylum, genus and species levels.
 
-Run from the repository root on Linux with Bash, a C++17 compiler with OpenMP, zlib development headers and the classifier's Python environment. The full v7 classifier, including the bacterial index, requires approximately 500 GB of RAM and a GPU with at least 16 GB of memory.
+Run from the repository root on Linux with Bash, a C++17 compiler with OpenMP, zlib development headers and the classifier's Python environment. The full classifier, including the bacterial index, requires approximately 500 GB of RAM and a GPU with at least 16 GB of memory.
 
 ```bash
 python3 -m venv .venv-classifier
@@ -14,13 +16,13 @@ source .venv-classifier/bin/activate
 python -m pip install -r classifier/requirements.txt
 bash classifier/bin/build.sh
 
-export MBC_ASSETS_ROOT=/path/to/v7/assets
-export MBC_LABEL_SPACE=/path/to/v7/config/label_space
+export MBC_ASSETS_ROOT=/path/to/classifier-bundle/assets
+export MBC_LABEL_SPACE=/path/to/classifier-bundle/config/label_space
 python classifier/pipeline/prepare_reads.py --input unmapped.fastq.gz --out reads.tsv
 python classifier/pipeline/run_pipeline.py --reads reads.tsv --out-dir runs/classifier --local
 ```
 
-Use `--r1` and `--r2` with `prepare_reads.py` for paired-end reads. `runs/classifier/final_predictions.tsv` contains taxon assignments. Append `--dry-run` to inspect the generated stage scripts before inference. Follow the [classifier asset layout](classifier/ASSETS.md) when configuring the external v7 database, label tables and model weights. Use a separate output directory for each input library.
+Use `--r1` and `--r2` with `prepare_reads.py` for paired-end reads. `runs/classifier/final_predictions.tsv` contains taxon assignments. Append `--dry-run` to inspect the generated stage scripts before inference. Follow the [classifier asset layout](classifier/ASSETS.md) to configure the external databases, label tables and model weights. Use a separate output directory for each input library.
 
 ## Host-to-microbe prediction
 
@@ -62,7 +64,7 @@ python -m moray select-host-genes --host host.h5ad --taxon-counts runs/taxon_cou
   --host-features runs/ranking/host_features.tsv --out runs/focal
 ```
 
-The focal model selects presence or read counts as its target based on the count distribution. The outputs include the full PermFIT table, `selected_host_genes.tsv` and `positive_cells.tsv`. For the manuscript permutation batching, use `--feature-batch 8` for STORM-seq, `--feature-batch 1` for COVID-19 and `--feature-batch 4` for NSCLC. Host prediction can also run with `--device cuda`.
+The focal model selects presence or read counts as its target based on the count distribution. The outputs include the full PermFIT table, `selected_host_genes.tsv` and `positive_cells.tsv`.
 
 ## Microbe-to-host gene modelling
 
